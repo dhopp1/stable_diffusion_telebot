@@ -1,3 +1,6 @@
+metadata/input_images/*
+metadata/models/*
+metadata/output_images/*
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

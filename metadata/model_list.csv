@@ -1,0 +1,3 @@
+name,url,path
+stable-diffusion-xl-base-1.0,stabilityai/stable-diffusion-xl-base-1.0,metadata/models/stable-diffusion-xl-base-1.0
+ReV_Animated_Inpainting,redstonehero/ReV_Animated_Inpainting,metadata/models/ReV_Animated_Inpainting
