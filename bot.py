@@ -44,8 +44,8 @@ else:
 device = "cuda" if torch.cuda.is_available() else "cpu"
 torch_dtype = torch.float16 if device == "cuda" else None
 
-num_variations = 1
-num_inference_steps = 1
+num_variations = 20
+num_inference_steps = 20
 guidance_scale = 7.5
 height = 512
 width = 512
@@ -134,6 +134,7 @@ def echo_all(message):
             )
             img = open(img_path, "rb")
             bot.send_photo(message.chat.id, img)
+            img.close()
             os.remove(img_path)  # delete the image locally
     except:
         bot.send_message(message.chat.id, text="error encountered, please try again")
