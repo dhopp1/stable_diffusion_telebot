@@ -1,3 +1,4 @@
+*.DS_Store
 metadata/input_images/*
 metadata/models/*
 metadata/output_images/*

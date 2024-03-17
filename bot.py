@@ -13,6 +13,15 @@ BOT_TOKEN = sys.argv[1]
 
 bot = telebot.TeleBot(BOT_TOKEN)
 
+if not(os.path.isdir("metadata/models/")):
+    os.mkdir("metadata/models/")
+    
+if not(os.path.isdir("metadata/input_images/")):
+    os.mkdir("metadata/input_images/")
+    
+if not(os.path.isdir("metadata/output_images/")):
+    os.mkdir("metadata/output_images/")
+
 # List of user_id of authorized users
 admins = list(pd.read_csv("metadata/admin_list.csv").user_id)
 
