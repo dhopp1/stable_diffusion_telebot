@@ -1,0 +1,6 @@
+accelerate
+diffusers
+pandas
+pillow
+telebot
+torch
