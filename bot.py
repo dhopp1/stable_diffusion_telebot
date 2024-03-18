@@ -43,8 +43,13 @@ else:
     outpainting_name = model_list.loc[1, "url"]
 
 # parameters
-device = "cuda" if torch.cuda.is_available() else "cpu"
-torch_dtype = torch.float16 if device == "cuda" else None
+if torch.cuda.is_available():
+    device = "cuda"
+elif torch.backends.mps.is_available() and torch.backends.mps.is_built():
+    device = "mps"
+else:
+    device = "cpu"
+torch_dtype = torch.float16 if device in ["cuda", "mps"] else None
 
 num_variations = 1
 num_inference_steps = 20
@@ -63,19 +68,6 @@ def send_welcome(message):
     )
 
     if message.from_user.id in admins:
-        global txt2img_pipe
-        global img2img_pipe
-
-        # txt2img model
-        txt2img_pipe = initialize_txt2img(
-            model_name, model_list.loc[0, "path"], device, torch_dtype
-        )
-        
-        # img2img model
-        img2img_pipe = initialize_img2img(
-            model_name, model_list.loc[0, "path"], device, torch_dtype
-        )
-
         bot.reply_to(
             message,
             f"""Successfully initialized! You are generating with Stable Diffusion XL 1.0, information on prompting here: https://blog.segmind.com/prompt-guide-for-stable-diffusion-xl-crafting-textual-descriptions-for-image-generation/.
@@ -115,8 +107,25 @@ def echo_all(message):
 
     if True:
         # img2img
-        if message.document is not None:
-            file_info = bot.get_file(message.document.file_id)
+        if message.document is not None or message.photo is not None:
+            global txt2img_pipe
+            global img2img_pipe
+            
+            if 'txt2img_pipe' in globals():
+                del txt2img_pipe
+                gc.collect()
+                
+            if 'img2img_pipe' not in globals():
+                # img2img model
+                img2img_pipe = initialize_img2img(
+                    model_name, model_list.loc[0, "path"], device, torch_dtype
+                )
+            
+            try: 
+                file_info = bot.get_file(message.document.file_id)
+            except:
+                file_info = bot.get_file(message.photo[0].file_id)
+                
             downloaded_file = bot.download_file(file_info.file_path)
             with open("metadata/input_images/tmp_image.png", 'wb') as new_file:
                 new_file.write(downloaded_file)
@@ -152,6 +161,16 @@ def echo_all(message):
             )
                 
         else:
+            if 'img2img_pipe' in globals():
+                del img2img_pipe
+                gc.collect()
+                
+            if 'txt2img_pipe' not in globals():
+                # txt2img model
+                txt2img_pipe = initialize_txt2img(
+                    model_name, model_list.loc[0, "path"], device, torch_dtype
+                )
+                    
             # txt2img
             img_paths = gen_txt2img(
                 pipe=txt2img_pipe,
