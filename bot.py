@@ -113,6 +113,9 @@ def echo_all(message):
             del outpainting_pipe
             gc.collect()
             
+        if device == "cuda":
+            torch.cuda.empty_cache()
+            
         bot.send_message(
             message.chat.id,
             text="models reset",
