@@ -87,7 +87,7 @@ To change these, pass the following as your prompt: '[params]{{'prompt':'prompt 
 
 For outpainting and img2img, upload/attach your photo in .png format, keeping in mind size/dimensions for outpainting.
 
-if generation starts to become slow, send a message with only the word 'reset'
+if generation starts to become slow, send a message with only the word 'reset' or 'clear'
 """,
         )
     else:
@@ -100,7 +100,7 @@ def echo_all(message):
     global img2img_pipe
     global outpainting_pipe
     
-    if message.text == "reset":
+    if message.text.lower() == "reset" or message.text.lower() == "clear":
         if 'txt2img_pipe' in globals():
             del txt2img_pipe
             gc.collect()
@@ -118,7 +118,7 @@ def echo_all(message):
             
         bot.send_message(
             message.chat.id,
-            text="models reset",
+            text="Models cleared from memory!",
         )
     else:
         bot.send_message(
